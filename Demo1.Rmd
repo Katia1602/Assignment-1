@@ -38,14 +38,101 @@ install.packages("ggthemes")
 install.packages("ggspatial")
 install.packages("Rcpp")
 
-```{r, load packages, message=FALSE}
+ ```{r, load packages, message=FALSE}
 library('tidyverse')
 library('sf')
 library('spData')
 library('ggthemes')
 library('ggspatial')
 ```
+#Reading in data sets
+```{r read data sets, message=FALSE, results='hide', warning=FALSE}
+playgrounds <- st_read("playground locations.geojson")
+gardens <- st_read("community gardens.geojson")
+historic <- st_read("historic districts.geojson")
+```
 
+
+## Plotting one layer on a map.
+
+```{r simple playground plot}
+
+playground_plot <- ggplot(playgrounds)+
+  geom_sf()
+
+playground_plot
+```
+## Points shape, color, size, transparency
+
+```{r point shapes, include=FALSE}
+ggplot(playgrounds)+
+  geom_sf(shape=17, color="blue", size=5, alpha=0.1)
+
+
+
+
+```
+
+#Plotting multuple layers
+
+```{r plot three layers}
+ggplot(playgrounds) +
+  geom_sf() +
+  geom_sf(data = historic,
+          color="red",
+          size=2,
+          fill="blue",
+          alpha=0.5)+
+  geom_sf(data = gardens, color="green")
+
+```
+
+##Adding a legend
+
+```{r}
+ ggplot() +
+  geom_sf(data=historic, color=NA, alpha=0.5,
+          aes(fill="Historic District")) +
+  geom_sf(data=playgrounds) +
+  geom_sf(data=gardens, color="green") +
+  scale_fill_manual(values="blue", name="")
+
+```
+#Adding base map
+```{r, message=FALSE, results="hide}
+ggplot(playgrounds)+
+  annotation_map_tile(zoomin=0, progress="none")+
+  geom_sf() +
+  labs(caption= "Map titles and data OpenStreetMap")
+
+
+```
+
+#Hotstyle
+```{r}
+ggplot(playgrounds)+
+  annotation_map_tile(zoomin=0, progress="none", type="hotstyle")+
+  geom_sf() +
+  labs(caption= "Map titles and data OpenStreetMap")
+```
+
+#Hikebike
+
+```{r}
+ggplot(playgrounds)+
+  annotation_map_tile(zoomin=0, progress="none", type="hikebike")+
+  geom_sf() +
+  labs(caption= "Map titles and data OpenStreetMap")
+```
+
+#osmgrayscale
+
+```{r}
+ggplot(playgrounds)+
+  annotation_map_tile(zoomin=0, progress="none", type="osmgrayscale")+
+  geom_sf() +
+  labs(caption= "Map titles and data OpenStreetMap")
+```
 
 
 
