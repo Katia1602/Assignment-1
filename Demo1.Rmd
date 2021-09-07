@@ -47,9 +47,10 @@ library('ggspatial')
 ```
 #Reading in data sets
 ```{r read data sets, message=FALSE, results='hide', warning=FALSE}
-playgrounds <- st_read("playground locations.geojson")
-gardens <- st_read("community gardens.geojson")
-historic <- st_read("historic districts.geojson")
+
+forests <- st_read("Forestry")
+parks <- st_read("CPD_Parks_0919")
+Art <- st_read("CPD_Park_Art")
 ```
 
 
@@ -57,16 +58,16 @@ historic <- st_read("historic districts.geojson")
 
 ```{r simple playground plot}
 
-playground_plot <- ggplot(playgrounds)+
+forestry_plot <- ggplot(forests)+
   geom_sf()
 
-playground_plot
+forestry_plot
 ```
 ## Points shape, color, size, transparency
 
 ```{r point shapes, include=FALSE}
-ggplot(playgrounds)+
-  geom_sf(shape=17, color="blue", size=5, alpha=0.1)
+ggplot(forests)+
+  geom_sf(color="black", fill="black", size=1, alpha=0.4)
 
 
 
@@ -76,63 +77,188 @@ ggplot(playgrounds)+
 #Plotting multuple layers
 
 ```{r plot three layers}
-ggplot(playgrounds) +
+ggplot(forests) +
   geom_sf() +
-  geom_sf(data = historic,
-          color="red",
-          size=2,
-          fill="blue",
-          alpha=0.5)+
-  geom_sf(data = gardens, color="green")
+  geom_sf(data = parks,
+          color="green",
+          size=1,
+          fill="green",
+          alpha=0.4)+
+  geom_sf(data=Art, color="red", size=2, alpha=0.2)
 
 ```
+
+#Adding a legend
+
+```{r adding legend, message=FALSE, results='hide'}
+
+ggplot() +
+  geom_sf(data = forests, color = NA, alpha = 0.5,
+          aes(fill = "Forests")) +
+  geom_sf(data = parks, color="green", fill="green") +
+  geom_sf(data = Art, color = "red") +
+  scale_fill_manual(values = "darkgrey", name = "")
+
+```
+
+#Adding a legend for mulptiple points
+
+```{r adding a legend for other points, message=FALSE, results='hide'}
+
+ggplot() +
+  geom_sf(data = forests, color = NA, alpha = 0.5,
+          aes(fill = "Forests")) +
+   geom_sf(data = parks,
+          aes(color = "Parks")) +
+  geom_sf(data=Art,
+          aes(color="Artwork")) +
+  scale_fill_manual(values = "grey", name = "")+
+  scale_color_manual(values = c("red", "green"), name = "")
+  
+
+```
+
+#Modifying the theme
+
+```{r}
+ggplot() +
+  geom_sf(data = forests, aes(fill = "Forests"), alpha = 0.25, color = NA)+
+  geom_sf(data = parks, aes(color = "Parks")) +
+  geom_sf(data = Art, aes(color = "Art")) +
+  scale_fill_manual(values = "goldenrod4", name = "") +
+  scale_color_manual(values = c("gold", "forestgreen"), name = "") +
+  theme(panel.background = element_rect(fill = "white"),
+        legend.key = element_rect(fill = "white"))
+```
+
+
+
+
+
+
+
+
+#Adding a base map
+
+```{r adding base map,, message=FALSE, results='hide'}
+
+ggplot(forests)+
+    annotation_map_tile(zoomin=0, progress="none")+
+  geom_sf(data = parks,
+          color="green",
+          size=1,
+          fill="green",
+          alpha=0.4)+
+  geom_sf(data=Art, color="red", size=2, alpha=0.2)
+scale_fill_manual(values = "blue", name = "")
+
+  
+```
+
+#Adding a base map - different color
+
+```{r adding base map, message=FALSE, results='hide'}
+
+ggplot(forests)+
+    annotation_map_tile(zoomin=0, progress="none", type="osmgrayscale")+
+  geom_sf(data = parks,
+          color="green",
+          size=1,
+          fill="green",
+          alpha=0.4)+
+  geom_sf(data=Art, color="red", size=2, alpha=0.2)
+scale_fill_manual(values = "blue", name = "")
+
+
+```
+
+
+##Adding legend to a base map
+
+```{r}
+ggplot()+
+    annotation_map_tile(zoomin=0, progress="none", type="osmgrayscale")+
+  geom_sf(data =parks,color="NA",size=5,alpha=0.4,aes(fill="Parks"))+
+  geom_sf(data=Art, size=2, alpha=0.2,
+          aes(color= "Art"))+
+scale_fill_manual(values = "green", name = "")+
+scale_color_manual(values = "red", name = "")+
+theme(legend.key=element_rect(fill="white"))
+
+```
+
+
+```{r adding legend}
+
+ggplot() +
+  geom_sf(data = Art,
+          aes(color = "Art")) +
+  geom_sf(data = parks, 
+          aes(color = "Community garden")) +
+  scale_fill_manual(values = "blue", name = "") +
+  scale_color_manual(values = c("green", "black"), name = "")
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
 
 ##Adding a legend
 
 ```{r}
  ggplot() +
-  geom_sf(data=historic, color=NA, alpha=0.5,
-          aes(fill="Historic District")) +
-  geom_sf(data=playgrounds) +
-  geom_sf(data=gardens, color="green") +
-  scale_fill_manual(values="blue", name="")
-
+  geom_sf(data = historic, color = NA, alpha = 0.5,
+          aes(fill = "Historic District")) +
+  geom_sf(data = playgrounds) +
+  geom_sf(data = gardens, color = "green") +
+  scale_fill_manual(values = "blue", name = "")
 ```
 #Adding base map
 ```{r, message=FALSE, results="hide}
-ggplot(playgrounds)+
+ggplot(forests)+
   annotation_map_tile(zoomin=0, progress="none")+
-  geom_sf() +
+  geom_sf(data = parks,
+          color="green",
+          size=1,
+          fill="black",
+          shape=14,
+          alpha=0.5)+
+  geom_sf(data=Art, shape=7, color="red", size=1, alpha=0.7) +
   labs(caption= "Map titles and data OpenStreetMap")
 
 
 ```
 
-#Hotstyle
-```{r}
-ggplot(playgrounds)+
-  annotation_map_tile(zoomin=0, progress="none", type="hotstyle")+
-  geom_sf() +
-  labs(caption= "Map titles and data OpenStreetMap")
-```
-
-#Hikebike
+#Adding Legend
 
 ```{r}
-ggplot(playgrounds)+
-  annotation_map_tile(zoomin=0, progress="none", type="hikebike")+
-  geom_sf() +
-  labs(caption= "Map titles and data OpenStreetMap")
+ ggplot() +
+  geom_sf(data = parks, color = "Green", alpha = 0.5,
+          aes(fill = "Parks")) +
+  geom_sf(data = Art) +
+  scale_fill_manual(values = "blue", name = "")
 ```
 
-#osmgrayscale
 
-```{r}
-ggplot(playgrounds)+
-  annotation_map_tile(zoomin=0, progress="none", type="osmgrayscale")+
-  geom_sf() +
-  labs(caption= "Map titles and data OpenStreetMap")
-```
+
+
+
+
+
+
+
+
+
 
 
 

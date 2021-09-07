@@ -28,3 +28,31 @@ plot(pressure)
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+#Install Packages
+
+```{r install packages, message=FALSE, results='hide', warning=FALSE}
+install.packages("tidyverse")
+install.packages("sf")
+install.packages("spData")
+install.packages("ggthemes")
+install.packages("ggspatial")
+install.packages("Rcpp")
+
+```
+```{r load packages, message = FALSE}
+library('tidyverse')
+library('sf')
+library('spData')
+library('ggthemes')
+library('ggspatial')
+```
+#Reading in data sets
+
+```{r read data sets, message=FALSE, results='hide', warning=FALSE}
+X2 <- st_read("playground locations.geojson")
+X2 <- st_read("community gardens.geojson")
+Polygon Data <- st_read("historic districts.geojson")
+```
+
+
