@@ -175,10 +175,11 @@ scale_fill_manual(values = "blue", name = "")
 
 ##Adding legend to a base map
 
-```{r}
+```{r adding legend to a map, message=FALSE, results='hide'}
 ggplot()+
     annotation_map_tile(zoomin=0, progress="none", type="osmgrayscale")+
-  geom_sf(data =parks,color="NA",size=5,alpha=0.4,aes(fill="Parks"))+
+  geom_sf(data =parks,color="NA",size=5,alpha=0.4,
+          aes(fill="Parks"))+
   geom_sf(data=Art, size=2, alpha=0.2,
           aes(color= "Art"))+
 scale_fill_manual(values = "green", name = "")+
